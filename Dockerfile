@@ -59,16 +59,14 @@ RUN busybox chown -Rh 0:0 /system && \
     busybox find ./bin ./lib/apt ./libexec -type f -exec busybox chmod 700 "{}" \;
 
 # Install updates and cleanup when not building for arm/i686.
-ENV ANDROID_DATA     /data
-ENV ANDROID_ROOT     /system
 ENV PATH /data/data/com.termux/files/usr/bin
-RUN if [[ ${BOOTSTRAP_ARCH} == 'arm' || ${BOOTSTRAP_ARCH} == 'i686' ]]; then exit; else \
-    /system/bin/mksh -T /dev/ptmx -c "/system/bin/dnsmasq -u root -g root --pid-file /dnsmasq.pid" && sleep 1 && \
-    su - system -c "/data/data/com.termux/files/usr/bin/apt update" && \
-    su - system -c "/data/data/com.termux/files/usr/bin/apt upgrade -o Dpkg::Options::=--force-confnew -yq" && \
-    rm -rf /data/data/com.termux/files/usr/var/lib/apt/* && \
-    rm -rf /data/data/com.termux/files/usr/var/log/apt/* && \
-    rm -rf /data/data/com.termux/cache/apt/* ;\
+RUN if [[ ${SYSTEM_TYPE} == 'arm' || ${BOOTSTRAP_ARCH} == 'i686' ]]; then exit; else \
+        /system/bin/mksh -c "/system/bin/dnsmasq -u root -g root --pid-file /dnsmasq.pid" && sleep 1 && \
+        su -l system -c "ANDROID_DATA=/data ANDROID_ROOT=/system apt update" && \
+        su -l system -c "ANDROID_DATA=/data ANDROID_ROOT=/system apt upgrade -o Dpkg::Options::=--force-confnew -yq" && \
+        rm -rf /data/data/com.termux/files/usr/var/lib/apt/* && \
+        rm -rf /data/data/com.termux/files/usr/var/log/apt/* && \
+        rm -rf /data/data/com.termux/cache/apt/* ;\
     fi
 
 ##############################################################################
