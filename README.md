@@ -18,7 +18,7 @@ This will start interactive login shell. Everything will look like in a
 normal Termux installation.
 
 ```.sh
-docker run -it ghcr.io/termux-user-repository/termux-docker:latest
+docker run -it ghcr.io/termux-user-repository/termux-docker-android-7:latest
 ```
 
 When using the tag `latest`, container will be 32 bit (i686 architecture).
@@ -56,13 +56,13 @@ seccomp profile is required.
 Variant with privileged container:
 
 ```.sh
-docker run -it --privileged ghcr.io/termux-user-repository/termux-docker:aarch64
+docker run -it --privileged ghcr.io/termux-user-repository/termux-docker-android-7:aarch64
 ```
 
 Variant with seccomp unconfined profile:
 
 ```.sh
-docker run -it --security-opt seccomp:unconfined ghcr.io/termux-user-repository/termux-docker:aarch64
+docker run -it --security-opt seccomp:unconfined ghcr.io/termux-user-repository/termux-docker-android-7:aarch64
 ```
 
 ### Non-interactive execution of commands
@@ -73,7 +73,7 @@ command line.
 Example:
 
 ```.sh
-docker run -it --rm ghcr.io/termux-user-repository/termux-docker:latest bash -c "apt update && apt install -yq clang"
+docker run -it --rm ghcr.io/termux-user-repository/termux-docker-android-7:latest bash -c "apt update && apt install -yq clang"
 ```
 
 ### Root shell
@@ -91,7 +91,7 @@ The provided images have 2 entry points:
 Usage example:
 
 ```.sh
-docker run -it --entrypoint /entrypoint_root.sh ghcr.io/termux-user-repository/termux-docker:latest
+docker run -it --entrypoint /entrypoint_root.sh ghcr.io/termux-user-repository/termux-docker-android-7:latest
 ```
 
 ## Building image

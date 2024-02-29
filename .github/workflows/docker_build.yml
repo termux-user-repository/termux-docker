@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - android-7
   pull_request:
   schedule:
     - cron: '0 2 * * 0'
@@ -44,14 +45,14 @@ jobs:
           *)       SYSTEM_TYPE=x86; PLATFORM_TAG="linux/amd64";;
         esac
         docker buildx build -t \
-          ghcr.io/termux-user-repository/termux-docker:${{ matrix.CPU_ARCH }} \
+          ghcr.io/termux-user-repository/termux-docker-android-7:${{ matrix.CPU_ARCH }} \
           --platform "$PLATFORM_TAG" \
           --build-arg BOOTSTRAP_ARCH=${{ matrix.CPU_ARCH }} \
           --build-arg SYSTEM_TYPE="${SYSTEM_TYPE}" \
           .
 
     - name: Login to Docker Hub
-      if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && github.repository == 'termux-user-repository/termux-docker'
+      if: github.ref == 'refs/heads/android-7' && github.event_name != 'pull_request' && github.repository == 'termux-user-repository/termux-docker'
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
@@ -59,12 +60,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push
-      if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && github.repository == 'termux-user-repository/termux-docker'
+      if: github.ref == 'refs/heads/android-7' && github.event_name != 'pull_request' && github.repository == 'termux-user-repository/termux-docker'
       run: |
-        docker push ghcr.io/termux-user-repository/termux-docker:${{ matrix.CPU_ARCH }}
+        docker push ghcr.io/termux-user-repository/termux-docker-android-7:${{ matrix.CPU_ARCH }}
         if [ ${{ matrix.CPU_ARCH }} = i686 ]; then
-          docker tag ghcr.io/termux-user-repository/termux-docker:i686 ghcr.io/termux-user-repository/termux-docker:latest
-          docker push ghcr.io/termux-user-repository/termux-docker:latest
+          docker tag ghcr.io/termux-user-repository/termux-docker-android-7:i686 ghcr.io/termux-user-repository/termux-docker-android-7:latest
+          docker push ghcr.io/termux-user-repository/termux-docker-android-7:latest
         fi
 
     - name: Export container as tar archive
@@ -72,17 +73,17 @@ jobs:
       run: |
         docker run \
           --privileged \
-          --name termux-docker-${{ matrix.CPU_ARCH }} \
-          ghcr.io/termux-user-repository/termux-docker:${{ matrix.CPU_ARCH }} \
+          --name termux-docker-android-7-${{ matrix.CPU_ARCH }} \
+          ghcr.io/termux-user-repository/termux-docker-android-7:${{ matrix.CPU_ARCH }} \
           uname -a
-        docker stop termux-docker-${{ matrix.CPU_ARCH }}
-        docker export -o termux-docker-${{ matrix.CPU_ARCH }}.tar \
-          termux-docker-${{ matrix.CPU_ARCH }}
-        sha256sum termux-docker-${{ matrix.CPU_ARCH }}.tar
+        docker stop termux-docker-android-7-${{ matrix.CPU_ARCH }}
+        docker export -o termux-docker-android-7-${{ matrix.CPU_ARCH }}.tar \
+          termux-docker-android-7-${{ matrix.CPU_ARCH }}
+        sha256sum termux-docker-android-7-${{ matrix.CPU_ARCH }}.tar
 
     - name: Store tar archive
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: termux-docker-${{ matrix.CPU_ARCH }}-${{ github.sha }}
-        path: termux-docker-${{ matrix.CPU_ARCH }}.tar
+        name: termux-docker-android-7-${{ matrix.CPU_ARCH }}-${{ github.sha }}
+        path: termux-docker-android-7-${{ matrix.CPU_ARCH }}.tar

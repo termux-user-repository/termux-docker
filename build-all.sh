@@ -28,19 +28,19 @@ esac
 for arch in "${ARCHITECTURES[@]}"; do
 	$SUDO $OCI build \
 		${OCI_ARG} \
-		-t 'ghcr.io/termux-user-repository/termux-docker:'"$arch" \
+		-t 'ghcr.io/termux-user-repository/termux-docker-android-7:'"$arch" \
 		-f Dockerfile \
 		--build-arg BOOTSTRAP_ARCH="$arch" \
 		--build-arg SYSTEM_TYPE="$SYSTEM_TYPE" \
 		.
 	if [ "${1-}" = "publish" ]; then
-		$SUDO $OCI push 'ghcr.io/termux-user-repository/termux-docker:'"$arch"
+		$SUDO $OCI push 'ghcr.io/termux-user-repository/termux-docker-android-7:'"$arch"
 	fi
 done
 
 if [ "$SYSTEM_TYPE" = "x86" ]; then
-	$SUDO $OCI tag ghcr.io/termux-user-repository/termux-docker:i686 ghcr.io/termux-user-repository/termux-docker:latest
+	$SUDO $OCI tag ghcr.io/termux-user-repository/termux-docker-android-7:i686 ghcr.io/termux-user-repository/termux-docker-android-7:latest
 	if [ "${1-}" = "publish" ]; then
-		$SUDO $OCI push 'tghcr.io/termux-user-repository/termux-docker:latest'
+		$SUDO $OCI push 'tghcr.io/termux-user-repository/termux-docker-android-7:latest'
 	fi
 fi
